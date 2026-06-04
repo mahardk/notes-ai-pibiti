@@ -1,3 +1,8 @@
+import Alpine from 'alpinejs';
+
+window.Alpine = Alpine;
+Alpine.start();
+
 const menuButton = document.getElementById('menu-button');
 const aside = document.getElementById('aside');
 
