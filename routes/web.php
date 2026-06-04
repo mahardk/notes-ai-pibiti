@@ -7,11 +7,16 @@ use App\Http\Controllers\NoteController;
 use App\Http\Controllers\QuizController;
 use App\Http\Middleware\CheckLogin;
 
-Route::get('/login', [AuthController::class, 'showLogin']);
-Route::post('/login', [AuthController::class, 'login']);
-Route::post('/logout', [AuthController::class, 'logout']);
+Route::middleware('guest')->group(function () {
+    Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
+    Route::post('/login', [AuthController::class, 'login'])->name('login.store');
+});
 
-Route::get('/', [DashboardController::class, 'index'])->middleware(CheckLogin::class);
-Route::get('/notes', [NoteController::class, 'index'])->middleware(CheckLogin::class);
-Route::get('/quiz', [QuizController::class, 'index'])->middleware(CheckLogin::class);
-Route::get('/show-quiz', [QuizController::class, 'show'])->middleware(CheckLogin::class);
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+
+Route::middleware(CheckLogin::class)->group(function () {
+    Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/notes', [NoteController::class, 'index'])->name('notes.index');
+    Route::get('/quiz', [QuizController::class, 'index'])->name('quiz.index');
+    Route::get('/quiz/{quiz}', [QuizController::class, 'show'])->name('quiz.show');
+});
